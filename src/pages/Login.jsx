@@ -1,24 +1,22 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom'; 
 import { TextField, Button, Typography, Box, Container, Grid, Link } from '@mui/material';
-  
-
+import { UserContext } from '../context/Usercontex';
 
 const LoginPage = () => {
+  const { setUserId } = useContext(UserContext);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
   const navigate = useNavigate();
 
-
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     if (name === 'email') setEmail(value);
     if (name === 'password') setPassword(value);
   };
-
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -31,11 +29,16 @@ const LoginPage = () => {
         password,
       });
 
-      // If successful, save the token in cookies
+      // Save the token in cookies
       document.cookie = `token=${response.data.token}; path=/; max-age=3600`;
 
+      // Store user data in local storage or context
+      localStorage.setItem('user', JSON.stringify(response.data.user));
+
+      setUserId(response.data.user._id);
       setSuccessMessage(response.data.message);
 
+      // Navigate based on role
       if (response.data.user.role === 'Admin') {
         navigate('/Admin');  
       } else if (response.data.user.role === 'Viewer') {
