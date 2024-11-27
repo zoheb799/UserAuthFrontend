@@ -9,6 +9,7 @@ import Adminpage from "./components/Admin";
 
 const App = () => {
   const { userId } = useContext(UserContext);
+  const { userRole} = useContext(UserContext)
 
   return (
     <div style={{ width: "100%", height: "100vh" }}>
@@ -16,7 +17,7 @@ const App = () => {
         <Routes>
           <Route path="/" element={userId ? <Homepage /> : <Login />} />
           <Route path="/register" element={<Register />} />
-          <Route path="/Admin" element={userId ? <Adminpage /> : <Login />} />
+          <Route path="/Admin" element={userId && userRole ==="Admin" ? <Adminpage /> : <Login />} />
           <Route path="/homepage" element={userId ? <Homepage /> : <Login />} />
           <Route path="/Userprofile" element={userId ? <UserProfilePage /> : <Login />} />
         </Routes>
